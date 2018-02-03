@@ -1,0 +1,203 @@
+{% extends "master.html" %}
+
+{% block head %}
+ <link rel="stylesheet" type="text/css" media="screen" href="static/css/jquery-ui-1.8.23.custom.css" /> 
+ <link rel="stylesheet" type="text/css" media="screen" href="static/css/custom_tables.css" />
+
+<script src="../static/js/d3.min.js"></script>
+<style>
+	.axis { shape-rendering: crispEdges; }
+	.y.axis .minor { stroke-opacity: .5; }
+	.x.axis path { display: none; }
+	.x.axis line { fill: none; }
+	.y.axis line, .y.axis path { fill: none; stroke: #000; }
+</style>
+
+<style type="text/css">
+	body {
+	text-align: left;
+	width: 1265px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0;
+	font-size: 16px;
+	font-family:Helvetica;
+}
+
+</style>
+{% endblock head %}
+
+{% block body %}
+<h1 align=center> Apogee Summary Page </h1>
+	{% for e in errors %}
+		<p style="color:red">{{ e }}</p>
+	{% endfor %}
+	<p>There are {{ natapo }} APOGEE-II plates at APO.</p>
+	<p>Of a total {{ nplates }} APOGEE-II plates, {{ nstarted }} have been started, and {{ ncomplete }} have been completed.</p>
+	<table class="expTable" style="text-align: center;">
+		<tr>
+			<th style="text-align: center;">Field Name</th>
+			<th style="text-align: center;">Plate ID</th>
+			<th style="text-align: center;">Location ID + Version</th>
+			<th style="text-align: center;">RA</th>
+			<th style="text-align: center;">Dec</th>
+			<th style="text-align: center;">HA</th>
+			<th style="text-align: center;">Priority</th>
+			<th style="text-align: center;"># Plan</th>
+			<th style="text-align: center;"># Done</th>
+			<th style="text-align: center;">QL S/N</th>
+			<th style="text-align: center;">Red S/N</th>
+			<th style="text-align: center;">Completion %</th>
+			<th style="text-align: center;">Observation History</th>
+			<th style="text-align: center;">Plate Location</th>
+		</tr>
+		{% for p in plates | sort(attribute='pctstr', reverse=True) %}{% if p.lead_survey == 'apg' %}
+			<tr>
+				<td style="text-align: center;">{{ p['name'] }}</td>
+				<td style="text-align: center;">{{ p['plateid'] }}</td>
+				<td style="text-align: center;">{{ p['locationid'] }} {{ p['apgver'] }}</td>
+				<td style="text-align: center;">{{ "%.3f" % p['ra'] }}</td>
+				<td style="text-align: center;">{{ "%.3f" % p['dec'] }}</td>
+				<td style="text-align: center;">{{ p['ha'] }}</td>
+				<td style="text-align: center;">{{ p['manual_priority'] }}</td>
+				<td style="text-align: center;">{{ p['vplan'] }}</td>
+				<td style="text-align: center;">{{ p['vdone'] }}</td>
+				<td style="text-align: center;">{{ "%.1f" % p['snql'] }}</td>
+				<td style="text-align: center;">{{ "%.1f" % p['snred'] }}</td>
+				{% if p.pct() >= 1 %}
+					<td style="color: green; text-align: center; padding: 5px">{{ "%.3f" % p.pctstr }}</td>
+				{% elif p.pct() >= 0.9 %}
+					<td style="color: red; text-align: center; padding: 5px">{{ "%.3f" % p.pctstr }}</td>
+				{% elif p.pct() >= 0.6 %}
+					<td style="color: orange; text-align: center; padding: 5px">{{ "%.3f" % p.pctstr }}</td>
+				{% elif p.pct() >= 0.3 %}
+					<td style="color: blue; text-align: center; padding: 5px">{{ "%.3f" % p.pctstr }}</td>
+				{% else %}
+					<td style="text-align: center;">{{ "%.3f" % p.pctstr }}</td>
+				{% endif %}
+				<td style="text-align: center;">{{ p.obsstr|safe }}</td>
+				<td style="text-align: center;">{{ p.plate_loc }}</td>
+			</tr>
+		{% endif %}{% endfor %}
+	</table>
+	<div>&nbsp;</div>
+
+	<h4>MaNGA-led Plates</h4>
+	<table class="expTable" style="text-align: center;">
+        <tr>
+            <th style="text-align: center;">Field Name</th>
+            <th style="text-align: center;">Plate ID</th>
+            <th style="text-align: center;">Location ID + Version</th>
+            <th style="text-align: center;">RA</th>
+            <th style="text-align: center;">Dec</th>
+            <th style="text-align: center;">HA</th>
+            <th style="text-align: center;">Priority</th>
+            <th style="text-align: center;"># Plan</th>
+            <th style="text-align: center;"># Done</th>
+            <th style="text-align: center;">QL S/N</th>
+            <th style="text-align: center;">Red S/N</th>
+            <th style="text-align: center;">Completion %</th>
+            <th style="text-align: center;">Observation History</th>
+            <th style="text-align: center;">Plate Location</th>
+        </tr>
+        {% for p in plates | sort(attribute='pctstr', reverse=True) %}{% if p.lead_survey == 'man' %}
+            <tr>
+                <td style="text-align: center;">{{ p['name'] }}</td>
+                <td style="text-align: center;">{{ p['plateid'] }}</td>
+                <td style="text-align: center;">{{ p['locationid'] }} {{ p['apgver'] }}</td>
+                <td style="text-align: center;">{{ "%.3f" % p['ra'] }}</td>
+                <td style="text-align: center;">{{ "%.3f" % p['dec'] }}</td>
+                <td style="text-align: center;">{{ p['ha'] }}</td>
+                <td style="text-align: center;">{{ p['manual_priority'] }}</td>
+                <td style="text-align: center;">{{ p['vplan'] }}</td>
+                <td style="text-align: center;">{{ p['vdone'] }}</td>
+                <td style="text-align: center;">{{ "%.1f" % p['snql'] }}</td>
+                <td style="text-align: center;">{{ "%.1f" % p['snred'] }}</td>
+                {% if p.pct() >= 1 %}
+                    <td style="color: green; text-align: center; padding: 5px">{{ "%.3f" % p.pctstr }}</td>
+                {% elif p.pct() >= 0.9 %}
+                    <td style="color: red; text-align: center; padding: 5px">{{ "%.3f" % p.pctstr }}</td>
+                {% elif p.pct() >= 0.6 %}
+                    <td style="color: orange; text-align: center; padding: 5px">{{ "%.3f" % p.pctstr }}</td>
+                {% elif p.pct() >= 0.3 %}
+                    <td style="color: blue; text-align: center; padding: 5px">{{ "%.3f" % p.pctstr }}</td>
+                {% else %}
+                    <td style="text-align: center;">{{ p.pct() }}</td>
+                {% endif %}
+                <td style="text-align: center;">{{ ' '.join(p.hist.split(',')) }}</td>
+                <td style="text-align: center;">{{ p.plate_loc }}</td>
+            </tr>
+        {% endif %}{% endfor %}
+    </table>
+
+    <!-- Plot locations -->
+    <div style='padding-top: 20px;'><h4>@APO LST Distribution</h4><p>Colors correspond to completion percentages above.</p><p>Grey line corresponds to expected number of visits for the next 90 days, assuming 45% weather.</p><div id='lst_apo_distribution'></div></div>
+    <div style='padding-top: 20px;'><h4>@APO + @Cosmic LST Distribution</h4><div id='lst_storage_distribution'></div></div>
+    <div style='padding-top: 20px;'><h4>All >4 Priority Plate LST Distribution</h4><div id='lst_all_distribution'></div></div>
+
+
+    <script type="text/javascript">
+		var m = [10, 10, 20, 80], w = 1000 - m[1] - m[3], h = 250 - m[0] - m[2];
+		var line = d3.svg.line().x(function(d) { return x(d[0]); }).y(function(d) { return y(d[1] * 0.45); }).interpolate("linear");
+		var flst = {{ forward_lst }};
+
+		// Create graph area
+		var graph = d3.select("#lst_apo_distribution").append("svg:svg").attr("width", w + m[1] + m[3]).attr("height", h + m[0] + m[2]).append("svg:g").attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+		// Create axes
+		var x = d3.scale.linear().domain([-0.5, 23.5]).range([0, w]), y = d3.scale.linear().domain([0, {{ max_lst + 10 }}]).range([h, 0]);
+		// Display axes
+		var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true).orient('bottom').tickFormat(d3.format('.0d'));
+		var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient("left");
+		graph.append("svg:g").attr("class", "x axis").attr("transform", "translate(0," + h + ")").call(xAxis);
+		graph.append("svg:g").attr("class", "y axis").attr("transform", "translate(-25,0)").call(yAxisLeft);
+		// Plot data
+		{% for i in range(24) %}
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_apo[i,0] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_apo[i,0] }}));
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_apo[i,1] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_apo[i,0] + lst_apo[i,1] }})).style("fill", "blue");
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_apo[i,2] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_apo[i,0] + lst_apo[i,1] + lst_apo[i,2] }})).style("fill", "orange");
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_apo[i,3] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_apo[i,0] + lst_apo[i,1] + lst_apo[i,2] + lst_apo[i,3] }})).style("fill", "red");
+		{% endfor %}
+		graph.append("path").attr("d", line(flst)).attr("stroke","grey").attr("stroke-width", 3).attr("fill","none");
+	</script>
+
+	<script type="text/javascript">
+		// Create graph area
+		var graph = d3.select("#lst_storage_distribution").append("svg:svg").attr("width", w + m[1] + m[3]).attr("height", h + m[0] + m[2]).append("svg:g").attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+		// Create axes
+		var x = d3.scale.linear().domain([-0.5, 23.5]).range([0, w]), y = d3.scale.linear().domain([0, {{ max_lst + 10 }}]).range([h, 0]);
+		// Display axes
+		var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true).orient('bottom').tickFormat(d3.format('.0d'));
+		var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient("left");
+		graph.append("svg:g").attr("class", "x axis").attr("transform", "translate(0," + h + ")").call(xAxis);
+		graph.append("svg:g").attr("class", "y axis").attr("transform", "translate(-25,0)").call(yAxisLeft);
+		// Plot data
+		{% for i in range(24) %}
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_store[i,0] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_store[i,0] }}));
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_store[i,1] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_store[i,0] + lst_store[i,1] }})).style("fill", "blue");
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_store[i,2] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_store[i,0] + lst_store[i,1] + lst_store[i,2] }})).style("fill", "orange");
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_store[i,3] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_store[i,0] + lst_store[i,1] + lst_store[i,2] + lst_store[i,3] }})).style("fill", "red");
+		{% endfor %}
+		graph.append("path").attr("d", line(flst)).attr("stroke","grey").attr("stroke-width", 3).attr("fill","none");
+	</script>
+
+	<script type="text/javascript">
+		// Create graph area
+		var graph = d3.select("#lst_all_distribution").append("svg:svg").attr("width", w + m[1] + m[3]).attr("height", h + m[0] + m[2]).append("svg:g").attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+		// Create axes
+		var x = d3.scale.linear().domain([-0.5, 23.5]).range([0, w]), y = d3.scale.linear().domain([0, {{ max_lst + 10 }}]).range([h, 0]);
+		// Display axes
+		var xAxis = d3.svg.axis().scale(x).tickSize(-h).tickSubdivide(true).orient('bottom').tickFormat(d3.format('.0d'));
+		var yAxisLeft = d3.svg.axis().scale(y).ticks(4).orient("left");
+		graph.append("svg:g").attr("class", "x axis").attr("transform", "translate(0," + h + ")").call(xAxis);
+		graph.append("svg:g").attr("class", "y axis").attr("transform", "translate(-25,0)").call(yAxisLeft);
+		// Plot data
+		{% for i in range(24) %}
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_all[i,0] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_all[i,0] }}));
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_all[i,1] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_all[i,0] + lst_all[i,1] }})).style("fill", "blue");
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_all[i,2] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_all[i,0] + lst_all[i,1] + lst_all[i,2] }})).style("fill", "orange");
+			graph.append('rect').attr('width', x(0.4)).attr('height', h - y({{ lst_all[i,3] }})).attr('x', x({{ i }} - 0.5)).attr('y', y({{ lst_all[i,0] + lst_all[i,1] + lst_all[i,2] + lst_all[i,3] }})).style("fill", "red");
+		{% endfor %}
+		graph.append("path").attr("d", line(flst)).attr("stroke","grey").attr("stroke-width", 3).attr("fill","none");
+	</script>
+
+{% endblock body %}

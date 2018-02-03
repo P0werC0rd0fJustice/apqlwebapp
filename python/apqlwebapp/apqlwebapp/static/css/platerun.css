@@ -1,0 +1,41 @@
+p.platerun {
+	/*color: blue;*/
+	font-size: 90%;
+	line-height: 60%;
+}
+
+#platerun {
+	background: rgb(236, 236, 236);
+	float: left;
+	width: 200px;
+	text-align: left;
+	margin: 50;
+	padding: 1% 0% 1% 1%; /* top right bottom left */
+}
+
+#platerun_detail {
+	float: left;
+	width: 500px;
+	text-align: left;
+	margin: 50;
+	padding: 0% 0% 0% 2%;
+}
+
+table.platedetail
+{
+border:1px solid #c3c3c3;
+border-collapse:collapse;
+}
+
+table.platedetail th
+{
+background-color:#e5eecc;
+border:1px solid #c3c3c3;
+padding:3px;
+}
+
+table.platedetail td 
+{
+border:1px solid #c3c3c3;
+padding:3px;
+}

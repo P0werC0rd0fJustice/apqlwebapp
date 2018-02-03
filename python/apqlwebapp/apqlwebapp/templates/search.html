@@ -1,0 +1,143 @@
+
+
+{% extends "master.html" %} 
+
+{% block head %}
+
+
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" py:if="False"/>
+  <script type="text/javascript" src="/static/js/sdss.js"></script>
+  <script type="text/javascript" src="/static/js/jquery-1.8.0.min.js"></script>
+  <script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" media="screen" href="static/css/jquery-ui-1.8.23.custom.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="static/css/custom_tables.css" />
+  <title>Apogee QL - Search</title>
+  
+
+
+<script type="text/javascript">
+
+var tabs = ["plate_tab", "mjd_tab"];
+var tab_array = new Array(0,1);
+
+function showTab( tab ){
+for (i in tab_array){
+	var obj = document.getElementById(tabs[i]);
+	obj.style.display = "none";
+	}
+var obj = document.getElementById(tab);
+obj.style.display = "block";
+
+for (n in tab_array){
+	var tab_name = tabs[n] + "_header";
+	if (tab == tabs[n]){
+		document.getElementById(tab_name).style.color = "#5d57a1";
+	}
+	else{
+		document.getElementById(tab_name).style.color = "#808080";
+	}
+	
+}	
+
+}
+
+</script>
+
+
+{% endblock head %}
+
+{% block body %}
+
+<div class="tabs">
+	<a class="tab" id="plate_tab_header" style="color:#5d57a1" onclick="showTab('plate_tab')">Search by Plate</a>
+	<a class="tab" id="mjd_tab_header" onclick="showTab('mjd_tab')">Search by MJD</a>
+</div>
+
+<div id="plate_tab" class="tabContent" style="display:block">
+		<form name ="plate_search" class="form2" action="/search.html" method="get" onsubmit="return setPM()">	
+			<input type="hidden" name="tab" value="plate_tab" />
+			<h3><span>PLATE</span></h3>
+		
+			<fieldset><legend>Plate Search form</legend>
+				<p class="first">
+					<label for="plate" align="left">Plate</label>
+					<input type="text" name="plateid" id="plateid" size="30" placeholder='e.g. 7531' onchange='fillMJDs();' onblur='fillMJDs();' value='{{plateid}}'/>
+				</p>
+				<p id="mjd_cell">
+					<label for="mjd" align="left">MJD</label>
+					<span style="color:#AAAAAA;font-style:italic;">Enter a Plate ID, then hit tab</span>
+
+				</p>
+				<p class="submit"><button type="submit">Send</button></p>			
+			</fieldset>					
+						
+		</form>	
+</div>
+
+<div id="mjd_tab" class="tab_content">
+		<form name ="mjd_search" class="form2" action="/search.html" method="get" onsubmit="return setMP()" >	
+			<input type="hidden" name="tab" value="mjd_tab" />
+			<h3><span>MJD</span></h3>
+			<fieldset><legend>MJD Search form</legend>
+				<p class="first">
+					<label for="mjd_label" align="left">MJD</label>
+					<input type="text" name="mjd" id="mjd" size="30" placeholder='e.g. 55934' onchange='fillPlateIDs();' onblur='fillPlateIDs();' value='{{mjd}}'/>
+				</p>
+				<p id="plate_cell">
+					<label for="plateid" align="left">Plate</label>
+					<span style="color:#AAAAAA;font-style:italic;">Enter an MJD, then hit tab</span>
+
+				</p>
+				<p class="submit"><button type="submit">Send</button></p>			
+			</fieldset>					
+						
+		</form>	
+
+</div>
+
+<script>
+	showTab('{{current_tab}}')
+</script>
+
+{% if error_messages|length == 0 %}
+<div id="exposureNav"><span style="color:black; margin-left:40px; font-size:14px;">Select an Exposure Number</span>
+	<ul>
+		{% for exp in exposure_table_rows %}
+			<li>
+				<a onclick="getQuickredTable({{exp['exposure_num']}}, {{exp['medsnr']|jsonfilter}}, {{plateid}})" href="#">{{exp['exposure_num']}}</a>
+			</li>
+		{% endfor %}
+	</ul>
+</div>
+
+<table cellpadding="0" cellspacing="0" border="0" class="table1" id="exposure_table">
+	<thead>
+		<tr>
+			<th width="12%">Plate {{plateid}}</th>
+			<th width="20%">Name {{exposure_table_rows[0]['field']}}</th>
+			<th width="15%">MJD {{mjd}}</th>
+			<th width="23%">Exposure ******</th>
+			<th width="15%">S/N *****</th>
+			
+	
+		</tr>
+	</thead>
+	<thead>
+		<tr>
+			<th>Fiber</th>
+			<th>S/N</th>
+			<th>H Mag</th>
+			<th>TMass ID</th>
+			<th>Target Type</th>
+		</tr>
+	</thead>
+	<tbody>
+		
+	</tbody>
+</table>	
+
+{% endif %}
+
+{% endblock body %}
+

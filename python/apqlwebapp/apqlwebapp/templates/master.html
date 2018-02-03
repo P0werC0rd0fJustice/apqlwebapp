@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<meta http-equiv="refresh" CONTENT="86400"/> 
+<head>
+
+    <link rel="stylesheet" type="text/css" media="screen" href="static/css/style.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="static/css/admin.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="static/css/screen.css" />
+    <link rel="shortcut icon" href="static/images/apogee2.ico" type="image/x-icon" />
+    <link rel="icon" href="static/images/apogee2.ico" type="image/x-icon">
+
+    {% block head %}{% endblock head%}
+
+</head>
+
+<body> 
+
+<div align="center">
+<img src="static/images/apql_logo.png" width="50%" height="50%" style="margin-left: 40px;" alt="apqlwebapp logo" id="logo"/>
+            <ul id="appleNav">
+                <li><a href="/" title="HOME">Home</a></li>
+                <li><a href="/search.html" title="SEARCH">Search for Exposure</a></li>
+                <li><a href="/browse.html" title="BROWSE">Browse by Date</a></li>
+                <li><a href="/targets.html" title="TARGETS">Targets</a></li>
+                <li><a href="/apogeeSummary.html" title="APOGEE SUMMARY">Apogee Summary</a></li>
+            </ul>
+</div>
+  
+  <div id="content">
+
+ {% block body %}{%endblock body %}
+
+    <!-- End of main_content -->
+  </div>
+
+  	
+  <div id="footer">
+  		{% include "footer.html" %}
+  </div>
+</body>
+</html>

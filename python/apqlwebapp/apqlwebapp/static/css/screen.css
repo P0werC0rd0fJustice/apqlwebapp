@@ -1,0 +1,605 @@
+/* 
+*	
+*	CSSG Collections: Forms
+*	designed and coded by Alen Grakalic (http://cssglobe.com)
+*	brought to you by Templatica (http://templatica.com)
+*
+*/
+
+html {
+	background: #b6b6ce;
+	text-align: center;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	text-align: left;
+	width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0;
+	font-size: 12px;
+	font-family:Helvetica;
+}
+
+h1{
+	font-size:200%;
+	font-weight:normal;
+	}		
+h2, h3, h4, h5, h6{
+	font-weight:normal;
+	margin:1em 0;
+	}	
+h2{            
+	font-size:160%;
+	}	
+h3{          
+	font-size:135%;
+	}
+h4{          
+	font-size:120%;
+	}				
+
+a{
+	text-decoration:none;
+	color:#f30;
+	}
+a:hover{
+	color:#999;
+	}			
+table, input, textarea, select, li{
+	font:100% Trebuchet MS, Arial, Helvetica, Sans-Serif;
+	line-height:160%;
+	color:#333;
+	}				
+p, blockquote, ul, ol, form{
+	margin:1em 0;
+	}
+blockquote{
+	}
+img{
+	border:none;
+	}			
+hr{
+	display:none;
+	}	
+table{
+	margin:1em 0;
+	width:100%;
+	border-collapse:collapse;
+	}
+th, td{	
+	padding:2px 5px;
+	}	
+th{	
+	text-align:left;
+	}
+	
+tr.odd {
+	background-color: #E2E4FF;
+}
+
+tr.even {
+	background-color: white;
+}
+
+li{
+	display:list-item;
+	}	
+
+.danger {
+  color: red;
+}
+.warning {
+  color: yellow;
+}
+.success {
+  color: green;
+  font-weight:bold; 
+}
+.e
+
+#container{	
+	margin:0 auto;
+	background:white;
+	width:600px;
+	padding:20px 40px;
+	text-align:left;
+	}		
+
+/*********************** Class's **************************/
+#menuDiv {
+	background: white;
+	width: 600px;
+	height: 20px;
+	margin-left: 282px;
+	margin-right: auto;
+	padding-left: 15px;
+	padding-right: 15px;
+
+}
+#menu  {
+	padding:0 10px;
+
+}
+
+#menu li {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	position: relative;
+	display: inline;
+	float: left;
+}
+#menu li a {
+	color: #ccc;
+	height: 20px;
+	display: block;
+	font:10px Helvetica, Sans-Serif;
+	line-height: 20px;
+	vertical-align: middle;
+	padding: 0 10px;
+	font-size: 12pt;
+	text-decoration: none;
+	border-left: 0px solid #565656;
+}
+#menu li.first a {
+	border-left: 0px;
+}
+#menu table {
+	border-collapse: collapse;
+	width: 0;
+	height: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+/* Style the list OR link hover. Depends on which browser is used */
+
+#menu li a:hover {
+	position: relative;
+	color: #72cf0e;
+}
+
+#menu li a:active {
+	position: relative;
+	color: white;
+}
+
+#menu li:hover {
+	position: relative;
+	z-index: 200;
+}
+
+#menu li.current a {
+	color: white;
+}
+
+/*
+#menu li:hover > a {
+	color: white;
+	background: -moz-radial-gradient(ellipse closest-side, rgba(72,181,202,0.35) 10%, rgba(0,0,0,0));
+	background: -webkit-gradient(linear,left bottom,right bottom, color-stop(0.1, rgba(0,0,0,0)),color-stop(.5, rgba(72,181,202,0.2)),color-stop(0.9, rgba(0,0,0,0)));
+}
+*/
+#menu li:hover > a.sub {
+	color: white;
+}
+#menu li.current a {
+	color: white;
+}
+#menu :hover ul {
+	left: 0;
+	top: 30px;
+	width: 140px;
+	background: #444;
+}
+/* keep the 'next' level invisible by placing it off screen. */
+#menu ul, #menu :hover ul ul {
+	position: absolute;
+	left: -9999px;
+	top: -9999px;
+	width: 0;
+	height: 0;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+#menu :hover ul :hover ul {
+	left: 120px;
+	top: -1px;
+	background: #222;
+	white-space: nowrap;
+	width: 140px;
+	z-index: 200;
+}
+#menu li.helpb {
+	float: right;
+	right: 10px;
+	cursor: pointer;
+}
+#menu :hover ul li {
+	top: 7px;
+	margin: 0;
+	border-top: 1px solid #666;
+}
+#menu :hover ul li a {
+	width: 200px;
+	padding: 2px;
+	text-indent: 10px;
+	font-size: 11pt;
+	background: #333;
+	color: #ddd;
+	height: 30px;
+	line-height: 30px;
+}
+#menu :hover ul :hover {
+	background-color: #307e8a;
+	color: #fff;
+}
+#menu :hover ul :hover ul li a {
+	width: 140px;
+	padding: 0;
+	text-indent: 10px;
+	background: #3e3e3e;
+	color: #ccc;
+}
+
+
+
+/* form 2 */
+
+	form.form2{
+		margin:1px;
+		margin-left: auto;
+		margin-right: auto;
+		color:#fff;
+		float: none;
+		padding:0px;
+		width:320px; /* customize width, this form have fluid layout */
+		border: 1px  #868686;
+		}	
+	form.form2 h3{
+		margin:0;
+		background:#5d57a1;		
+		color:#fff;
+		font-size:20px;
+		border:1px solid #2C0058;
+		border-bottom:none;
+		}		
+	form.form2 h3 span{
+		display:block;
+		padding:10px 20px;		
+		}				
+	form.form2 fieldset{
+		margin:0;
+		padding:0;
+		border:none;	
+		border-top:3px solid #000;
+		background:#000;		
+		padding-bottom:.5em;
+		}		
+	form.form2 legend{display:none;}	
+	form.form2 p{margin:.5em 20px;}	
+	form.form2 label{
+		display:block;
+		}
+
+	form.form2 input, form.form2 textarea{		
+		width:272px;
+		border:1px solid #111;
+		background:#282828 url(../images/form2/form_input.gif) repeat-x;
+		padding:5px 3px;
+		color:#fff;
+		}		
+	form.form2 textarea{
+		height:125px;
+		overflow:auto;
+		}					
+	form.form2 p.submit{
+		text-align:right;
+		}	
+	form.form2 button{
+		padding:0 20px;
+		height:32px;
+		line-height:32px;		
+		border:1px solid #2C0058;
+		background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0.2, #413d71),color-stop(1, #5d57a1));
+		background-image: -o-linear-gradient(top, #413d71 20%, #5d57a1 100%);
+		background-image: -moz-linear-gradient(top, #413d71 20%, #5d57a1 100%);
+		background-image: -webkit-linear-gradient(top, #413d71 20%, #5d57a1 100%);
+		background-image: -ms-linear-gradient(top, #413d71 20%, #5d57a1 100%);
+		background-image: linear-gradient(to top, #413d71 20%, #5d57a1 100%);
+		background-color:#5d57a1; /* Fallback */
+
+		color:#fff;
+		cursor:pointer;		
+		text-align:center;		
+		}				
+
+/* // form 2 */
+
+/* form 3 */
+
+	form.form3{
+		margin:1px;
+		margin-left: auto;
+		margin-right: auto;
+		color:#fff;
+		float: none;
+		padding:0px;
+		width:250px; /* customize width, this form have fluid layout */
+		
+		}
+	form.form3 h3{
+		margin:0;
+		background:#490093;		
+		color:#fff;
+		font-size:20px;
+		border:1px solid #56a600;
+		border-bottom:none;
+		}		
+	form.form3 h3 span{
+		display:block;
+		padding:10px 20px;
+		background:url(../images/form2/form_ico.gif) no-repeat 93% 50%;			
+		}				
+	form.form3 fieldset{
+		margin:0;
+		padding:0;
+		border:none;	
+		border-top:3px solid #000;
+		background:#000 url(../images/form2/form_top.gif) repeat-x;		
+		padding-bottom:.5em;
+		}		
+	form.form3 legend{display:none;}	
+	form.form3 p{margin:.5em 20px;}	
+	form.form3 label{
+		display:block;
+		}
+
+	form.form3 input, form.form3 textarea{		
+		width:75px;
+		height:32px;
+		border:1px solid #111;
+		box-sizing: border-box;
+		font-size: 12px; 
+		background:#f0e0ff ;
+		padding:5px 3px;
+		color:#000;
+		float:center;
+		vertical-align: middle;
+		}		
+	form.form3 textarea{
+		height:125px;
+		overflow:auto;
+		}					
+	form.form3 p.submit{
+		text-align:center;
+		}	
+	form.form3 button{
+		padding:0 20px;
+		width:100px;
+		height:32px;	
+		border:1px solid #2f2f2f;
+		box-sizing: border-box;
+		font-size: 12px; 
+		vertical-align: middle;
+		background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0.2, #5d57a1),color-stop(1, #413d71));
+		background-image: -o-linear-gradient(top, #5d57a1 20%, #413d71 100%);
+		background-image: -moz-linear-gradient(top, #5d57a1 20%, #413d71 100%);
+		background-image: -webkit-linear-gradient(top, #5d57a1 20%, #413d71 100%);
+		background-image: -ms-linear-gradient(top, #5d57a1 20%, #413d71 100%);
+		background-image: linear-gradient(to top, #5d57a1 20%, #413d71 100%);
+		background-color:#5d57a1; /* Fallback */
+
+		color:#fff;
+		cursor:pointer;		
+		text-align:center;		
+		}				
+
+/* // form 3 */
+
+		
+/* Tabbed Forms */
+div.tabs {
+  font-size: 12pt;
+  width: 320px;
+  padding:30px 0em 0px 0px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+div.exp_tabs {
+  font-size: 12pt;
+  width: 800px;
+  padding:30px 0em 0px 0px;
+  float:left;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
+a.tab {
+  background-color: #f2ecff;
+  text-decoration: none;
+}
+
+a.tab,a.tab:visited {
+  color: #808080;
+}
+
+
+a.tab:hover {
+  background-color: #d0d0d0;
+  color: #606060;
+}
+
+
+div.tabContent {
+  padding: 0px;
+  padding-bottom: 50px;
+  border: 0px solid #000000;
+  background-color: #f2ecff;;
+  display: none;
+}
+
+
+/*
+
+/* Exposure Button List */
+
+#exposureNav {
+	margin: 40px 0px; list-style:none;
+	padding: 0 0 .5em;
+	font-family: Helvetica;
+	width: 800px;
+	height: 34px;
+}
+
+/*Exposure */
+#exposureNav li {
+    display:block; 
+    float:left;  
+    width:105px; 
+    height:34px;  
+	background:#5d57a1;		
+	color:#fff;
+	font-size:1em;
+	border:1px solid #5d57a1;
+	border-top:none;
+}
+
+ 
+#exposureNav li a {
+    color:white; 
+    text-decoration:none; 
+    text-align:center;
+    display:block; 
+    line-height:34px; 
+    outline:none; }
+
+ 
+#exposureNav li:hover {
+	font-size: 1.2em;
+    background-color:#b685b6; /* Fallback */
+    
+}
+ 
+#exposureNav {
+     -webkit-animation: showMenu 1s; position:relative;
+     -moz-animation: showMenu 1s; position:relative;
+}
+
+
+/* APPLE STYLE NAVIGATION MENU */
+#appleNav { margin:5px 0; list-style:none;
+
+    /* Lucinda Grande is the font used on the website from Apple. */
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif; letter-spacing:-0.5px; font-size:13px;
+    
+    /* Apply a subtle text-shadow to the text */
+    text-shadow: 0 -1px 3px #202020;
+
+    /* We want to add the shadow to the complete navigation menu. In order to do that, we'll need to set
+    the correct width and height, and also the correct borders, in order to create the perfect drop shadow */
+    width:600px; height:34px;
+    
+
+}
+
+#appleNav li { display:block; float:left; border-right:1px solid #2f2f2f; border-left:1px solid #2f2f2f; width:116px; height:34px; border-bottom:1px solid #2f2f2f; border-top:1px solid #2f2f2f;
+
+    /* Gradient backgrounds for the buttons. Generated using http://gradients.glrzad.com/ */
+background-image: -webkit-gradient(
+	linear,
+	left bottom,
+	left top,
+	color-stop(0.2, #413d71),
+	color-stop(1, #5d57a1)
+);
+background-image: -o-linear-gradient(top, #413d71 20%, #5d57a1 100%);
+background-image: -moz-linear-gradient(top, #413d71 20%, #5d57a1 100%);
+background-image: -webkit-linear-gradient(top, #413d71 20%, #5d57a1 100%);
+background-image: -ms-linear-gradient(top, #413d71 20%, #5d57a1 100%);
+background-image: linear-gradient(to top, #413d71 20%, #5d57a1 100%);
+background-color:#5d57a1; /* Fallback */
+}
+
+/* Set the states when hovering, except for the last item in the list (the search bar), since it doesn't need to change */
+#appleNav li:hover {
+background-image: -webkit-gradient(
+	linear,
+	left bottom,
+	left top,
+	color-stop(0.2, #5d57a1),
+	color-stop(1, #413d71)
+);
+background-image: -o-linear-gradient(top, #5d57a1 20%, #413d71 100%);
+background-image: -moz-linear-gradient(top, #5d57a1 20%, #413d71 100%);
+background-image: -webkit-linear-gradient(top, #5d57a1 20%, #413d71 100%);
+background-image: -ms-linear-gradient(top, #5d57a1 20%, #413d71 100%);
+background-image: linear-gradient(to top, #5d57a1 20%, #413d71 100%);
+background-color:#413d71; /* Fallback */
+}
+/* When the user clicks the button, we simply change the box inset (compared to the "hover") */
+#appleNav li:active {
+    background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #3F3F3F), color-stop(0.5, #383838), color-stop(0.51, #434343), color-stop(1, #555555));
+    background-image: -moz-linear-gradient(center bottom, #3F3F3F 0%, #383838 50%, #434343 51%, #555555 100% );
+    background-color:#383838; /* Fallback */
+    
+    -moz-box-shadow: inset 0 1px 2px 2px #000;
+    -webkit-box-shadow: inset 0 1px 2px 2px #000;
+    box-shadow: inset 0 1px 2px 2px #000;
+}
+
+#appleNav li a { color:white; text-decoration:none; text-align:center; display:block; line-height:34px; outline:none; }
+
+
+
+/* Rounded corner for the first in last item. Shorthand: Top left, Top right, Bottom right, Bottom left.
+We also remove the borders, since they don't need them. */
+#appleNav li:first-child {
+    -moz-border-radius:4px 0 0 4px;
+    -webkit-border-radius:4px 0 0 4px;
+    border-radius:4px 0 0 4px;
+    
+    border-left:none;
+}
+
+
+
+#appleNav li:last-child {
+    -moz-border-radius:0 4px 4px 0;
+    -webkit-border-radius:0 4px 4px 0;
+    border-radius:0 4px 4px 0;
+    
+    border-right:none;
+    
+    /* The width of the last menu item (search bar) is bigger than the others */
+    width:124px;
+}
+
+
+/* Fade in animation (Webkit only) */
+
+@-webkit-keyframes showMenu {
+    from { opacity: 0; top:-20px; }
+    to   { opacity: 1; }
+}
+
+@-moz-keyframes showMenu /* Firefox */
+{
+from { opacity: 0; top: -20px;}
+to { opacity: 1; }
+}
+
+@-o-keyframes showMenu /* Opera */
+{
+from { opacity: 0; top:-20px;}
+to { opacity: 1;}
+}
+

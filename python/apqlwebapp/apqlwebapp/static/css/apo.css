@@ -1,0 +1,90 @@
+.highlight {
+	background: rgb(252, 255, 175);
+}
+
+.green_highlight {
+	background: rgb(185, 255, 189);
+}
+
+.red_highlight {
+	background: #D16053;
+}
+
+.blue_highlight {
+	background: #7CAEFF;
+}
+
+.pink_highlight {
+	background: #FF89B1;
+}
+
+.no_comment {
+	font-style:italic;
+	color:green;
+}
+
+.nobreak {
+	white-space:nowrap;
+}
+
+/* see: http://www.css3.info/preview/rounded-border/ */
+.rounded_view
+{
+    background-color: rgb(224, 232, 194);  /* if needed */
+    border: 2px solid rgb(177, 177, 177);   /* if needed */
+	/*-moz-border-radius-topleft: 5px; */
+	/*-webkit-border-top-left-radius: 10px;*/
+	-webkit-border-radius: 10px;    /* for Safari */
+    -moz-border-radius: 10px;       /* for Firefox */
+    padding: 0% 1% 1% 1%;  /* top right bottom left */
+}
+
+#leftcolumn {
+	#border: 1px solid red;
+	padding: 0% 5% 0% 0%;
+	float: left;
+}
+
+#rightcolumn {
+	#border: 1px solid red;
+	float: right;
+}
+
+.clear {
+	clear: both;
+}
+
+table.apo
+{
+border:1px solid #c3c3c3;
+border-collapse:collapse;
+cellspacing:"0";
+cellpadding="2";
+}
+
+table.apo th
+{
+background-color:#e5eecc;
+border:1px solid #c3c3c3;
+padding:3px;
+}
+
+table.apo td 
+{
+border:1px solid #c3c3c3;
+padding:3px;
+}
+
+tr.highlight {
+	background-color:#FFE1DB;
+}
+
+.big_font
+{
+font-size: 150%;
+}
+
+.documentation {
+	font-size: 90%;
+	font-color: #444444;
+}

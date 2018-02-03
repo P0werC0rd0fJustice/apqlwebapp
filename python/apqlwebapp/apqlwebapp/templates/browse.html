@@ -1,0 +1,97 @@
+{% extends "master.html" %} 
+
+{% block head %}
+
+  <link rel="stylesheet" type="text/css" media="screen" href="static/css/jquery-ui-1.8.23.custom.css" /> 
+  <link rel="stylesheet" type="text/css" media="screen" href="static/css/custom_tables.css" />
+  
+  <script type="text/javascript" src="static/js/jquery-1.8.0.min.js"></script>
+  <script type="text/javascript" src="static/js/convert.js"></script>
+  <script type="text/javascript" src="static/js/jquery-ui-1.8.23.custom.min.js"></script>
+  
+  <title>Apogee QL - Browse</title>
+  
+
+{% endblock head %}
+  
+{% block body %}
+
+
+<div style="padding:2em">
+		<form name ="mjd_browse" class="form2" action="/browse.html" method="post">	
+				
+			<fieldset><legend>MJD Browse form</legend>
+				<p class="first">
+					<div align="center" id="datepicker"></div>
+				</p>	
+			</fieldset>					
+						
+		</form>
+</div>
+
+
+<h1 style="color:black; display:block; height:20px;" align="center"></h1>
+
+{% if exposure_table_rows|length != 0 %}
+	{% for plate in exposure_table_rows.keys()|sort %}
+		<table class="expTable">
+			<thead>
+				<tr>
+					<th colspan="1">Plate: {{plate}}</th>
+					<th colspan="1">Field: {{exposure_table_rows[plate][0]['field']}}</th>
+					<th colspan="1">Cart: {{exposure_table_rows[plate][0]['cart']}}</th>
+					<th colspan="1">S/N: {{sn_total[plate]}}</th>
+				</tr>
+				
+				<tr>
+					<th>Exposure Number</th>
+					<th>Exposure Time</th>
+					<th>Exposure Type</th>
+					<th>S/N</th>
+				</tr>
+				
+			</thead>
+	
+				{% for exp in exposure_table_rows[plate]|sort(attribute='exposure_num') %}
+						<tr onclick="window.open('/exposureDetail.html?exposure_num={{exp['exposure_num']}}');">
+							<td>{{exp['exposure_num']}}</td>
+							<td>{{exp['exposure_time']}}</td>
+							<td>{{exp['exposure_type']}}</td>
+							<td>{{exp['snr']}}</td>
+						</tr>
+
+				{% endfor %}
+		</table>
+	{% endfor %}
+{% endif %}
+
+
+  <script>
+  $(function() {
+
+  	var month = String({{date_numbers[0]}});
+  	var day = String({{date_numbers[1]}});
+  	var year = String({{date_numbers[2]}});
+  	
+    $("#datepicker").datepicker({
+    	dateFormat : 'mm/dd/yy',
+    	defaultDate : month+"/"+day+"/"+year,
+    	onSelect: function(date) { 
+    		window.open('/browse.html?date='+date, '_self', 'width=1020,height=700,resizable=0');}
+    	});
+	  $(".ui-state-default").live("mouseenter", function() {
+	  		var mo = $(".ui-datepicker-month",$(this).parents()).text();
+	  		var ye = $(".ui-datepicker-year",$(this).parents()).text();
+	  		var da = $(this).text();
+	  		var m =  new Date(Date.parse(mo + ',' + da +',' + ye)).getMonth()+1;
+	  		var mjd = date2mjd(m,da,ye);
+	
+	  		$("h1").html(("MJD: "+mjd).fontcolor("#5d57a1"));
+	  	});
+	  $(".ui-state-default").live("mouseleave", function() {
+	  		$("h1").text("");
+	  	});	  
+  });
+  </script>
+  
+{% endblock body %}

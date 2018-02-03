@@ -1,0 +1,37 @@
+{% extends "master.html" %} 
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" media="screen" href="static/css/custom_tables.css" />
+    <script type="text/javascript" src="static/js/dygraphs/dygraph-combined.js"></script>
+    <script type="text/javascript" src="static/js/generic.js"></script>
+    <title>Apogee QL - Spectrum Detail</title>
+{% endblock head %}
+
+
+{% block body %}
+
+  {% if error_messages|length >0 %}
+     <p  style="color:red;font-size:110%;font-weight:bold;">
+            {% for error_line in error_messages %}
+                <br/>Error: {{error_line}}
+            {% endfor %}
+    </p>
+  {% endif %}
+<br>
+<div id='spectrum' style='width:900px;height:500px;text-align:left;'></div>
+<br>
+
+<script type = "text/javascript">
+
+	g = new Dygraph(
+        document.getElementById("spectrum"),
+        {{wl_flux}},
+        { visibility : [true],
+        title: 'Plate: {{plateID}}, MJD: {{mjd}}, Exposure: {{exposure_num}}, Fiber: {{fiber_num}}',
+        xlabel: 'Wavelength (&Aring;ngstr&ouml;ms)',
+        ylabel: 'Flux (10<sup>-17</sup> erg/cm<sup>2</sup>/s/&Aring;)'
+        });
+        
+</script>
+    
+{% endblock body %}

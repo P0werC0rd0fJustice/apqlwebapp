@@ -1,0 +1,160 @@
+
+{% extends "master.html" %} 
+
+{% block head %}
+
+ <!-- <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" py:if="False" /> -->
+<link rel="stylesheet" type="text/css" media="screen" href="static/css/custom_tables.css" />
+<title>Apogee QL - Targets</title>
+  
+<script type="text/javascript">
+
+var tabs = ["plate_tab", "target_tab"];
+var tab_array = new Array(0,1);
+
+function showTab( tab ){
+
+for (i in tab_array){
+	var obj = document.getElementById(tabs[i]);
+	obj.style.display = "none";
+	}
+	
+var obj = document.getElementById(tab);
+obj.style.display = "block";
+
+for (n in tab_array){
+	var tab_name = tabs[n] + "_header";
+	if (tab == tabs[n]){
+		document.getElementById(tab_name).style.color = "#5d57a1";
+	}
+	else{
+		document.getElementById(tab_name).style.color = "#808080";
+	}
+	
+}	
+
+}
+
+function changeCursor(submit_btn){
+	document.body.style.cursor = 'wait';
+	document.getElementById(submit_btn).style.cursor = 'wait';
+}
+</script>
+  
+{% endblock head %}
+
+{% block body %}
+
+<div class="tabs">
+	<a class="tab" id="plate_tab_header" style="color:#4a0093" onclick="showTab('plate_tab')">Search by Plate</a>
+	<a class="tab" id="target_tab_header" onclick="showTab('target_tab')">Search by Targets</a>
+</div>
+
+
+<div id="plate_tab" class="tabContent" style="display:block">
+
+		<form name ="plateSearch" class="form2" action="/targets.html" method="get">	
+		
+			<h3><span>PLATE</span></h3>
+		
+			<fieldset><legend>Plate Search form</legend>
+				<p class="first">
+					<label for="plate" align="left">Plate</label>
+					<input type="text" name="plateid" id="plateid" size="30" placeholder='e.g. 7531' value="{{plateid}}"/>
+				</p>
+				<p class="submit"><button type="submit" id="plate_submit_btn" onclick="changeCursor('plate_submit_btn');">Send</button></p>
+				{% for err in error_messages %}	
+					<p style="color:red"> {{err}} </p>
+				{% endfor %}
+				{% for warn in warning_messages %}	
+					<p style="color:red"> {{warn}} </p>
+				{% endfor %}
+			</fieldset>					
+						
+		</form>	
+</div>
+
+<div id="target_tab" class="tabContent">
+		<form name ="plate_search" class="form2" action="/targets.html" method="get">	
+		
+			<h3><span>TARGETS</span></h3>
+		
+			<fieldset><legend>Target Search form</legend>
+				<p>
+					<label for="target_list">Target List</label>
+					<textarea name="targets" id="targets" cols="30" rows="10" placeholder="2M29384031+0394857"></textarea>
+				</p>
+
+				<p class="submit"><button type="submit" id="target_submit_btn" onclick="changeCursor('target_submit_btn');">Send</button></p>
+				{% for err in error_messages %}	
+					<p style="color:red"> {{err}} </p>
+				{% endfor %}
+				{% for warn in warning_messages %}	
+					<p style="color:red"> {{warn}} </p>
+				{% endfor %}			
+			</fieldset>					
+						
+		</form>	
+</div>
+
+<script>
+	showTab('{{current_tab}}')
+</script>
+
+
+{% if target_table_rows|length != 0 and error_messages|length ==0 and table_type == 'target' %}
+	<table class="expTable">
+		<thead>
+			<tr>
+				<th>2Mass ID</th>
+				<th>RA</th>
+				<th>DEC</th>
+				<th>H MAG</th>
+				<th>Plate ID</th>
+				<th>Field</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			{% for targ in target_table_rows %}
+				<tr>
+					<td>{{targ[0]}}</td>
+					<td>{{targ[1]}}</td>
+					<td>{{targ[2]}}</td>
+					<td>{{targ[3]}}</td>
+					<td>{{targ[4]}}</td>
+					<td>{{targ[5]}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endif %}
+
+{% if target_table_rows|length != 0 and error_messages|length ==0 and table_type == 'plate' %}
+
+	<table class="expTable">
+		<thead>
+			<tr>
+			<th colspan="2"><strong>Plate:</strong> {{plateid}} </th>
+			<th colspan="2"><strong>Field:</strong> {{field}}</th>	
+			<tr>
+				<th>2Mass ID</th>
+				<th>RA</th>
+				<th>DEC</th>
+				<th>H Mag</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for targ in target_table_rows %}
+				<tr>
+					<td>{{targ[0]}}</td>
+					<td>{{targ[1]}}</td>
+					<td>{{targ[2]}}</td>
+					<td>{{targ[3]}}</td>	
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endif %}
+
+{% endblock body %}

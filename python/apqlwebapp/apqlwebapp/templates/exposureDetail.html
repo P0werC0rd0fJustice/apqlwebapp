@@ -1,0 +1,77 @@
+{% extends "master.html" %} 
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" media="screen" href="static/css/custom_tables.css" />
+    <script type="text/javascript" src="static/js/dygraphs/dygraph-combined.js"></script>
+    <title>Apogee QL - Exposure Detail</title>
+{% endblock head %}
+
+
+{% block body %}
+  
+  {% if error_messages|length >0 %}
+     <p  style="color:red;font-size:110%;font-weight:bold;">
+            {% for error_line in error_messages %}
+                <br/>Error: {{error_line}}
+            {% endfor %}
+    </p>
+  {% endif %}
+       
+    
+    <table class="expDetailTable" id="readSNTable" style="float:left; margin-right:3em;">
+        <tbody>
+            <tr>
+                <td>
+                    <div id="readSN" style="width:410px;height:410px;text-align:left;"></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    
+
+    
+    <table class="expDetailTable" id="hmagSNTable">
+        <tbody>
+            <tr>
+                <td>
+                    <div id="hmagSN" style="width:410px;height:410px;text-align:left;"></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+ 
+
+
+
+    <script type = "text/javascript">
+    
+        g = new Dygraph(
+            document.getElementById("readSN"),
+            {{read_sn}},
+            { visibility : [true],
+            title: 'Read vs. S/N : {{exposure_num}}',
+            xlabel: 'Read Number',
+            ylabel: 'S/N<sup>2</sup>'
+            });
+            
+    </script>
+     
+
+    <script type = "text/javascript">
+    
+        g = new Dygraph(
+            document.getElementById("hmagSN"),
+            {{hmag_sn}},
+            { visibility : [true],
+              title: 'HMag vs. S/N : {{exposure_num}}',
+              drawPoints: true,
+              strokeWidth: 0.0,
+              xlabel: 'H Magnitude',
+              ylabel: 'log S/N'
+            });
+            
+    </script>
+
+    
+  
+{% endblock body %}

@@ -1,0 +1,374 @@
+{% extends "master.html" %} 
+
+{% block head %}
+
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" py:if="False"/>
+  <link rel="stylesheet" type="text/css" media="screen" href="static/css/jquery-ui-1.8.23.custom.css" /> 
+  <link rel="stylesheet" type="text/css" media="screen" href="static/css/custom_tables.css" />
+  <script type="text/javascript" src="/static/js/jquery-1.8.0.min.js"></script>
+  <script type="text/javascript" src="/static/js/sdss.js"></script>
+
+  <title>Apogee QL - Front Page</title>
+  
+<script>
+
+//run these at the start
+$(function (){
+	populateActivePluggings();
+	populateExposureTables(0);
+	updateTime();
+})
+
+
+
+//populate the Active Plugging table
+function populateActivePluggings(){
+$.ajax({
+        url: '/activelist',
+        dataType: 'json',
+        success: function(data) {
+    		//extract the most recently observed plate today
+   			var latest_plate = data['latest_plate'];
+   			//if the latest_plate has changed and no plate has been manually selected, refresh the page
+   			if (latest_plate != null){
+	   			if ({{ver_plates}}.length == 0){
+						//first plate of the night
+						location.reload();	 
+				}
+			
+		   		else if ({{plate_selected}} == 0 && {{ver_plates}}.indexOf(latest_plate) == -1){ 
+	   				location.reload();
+		   		}
+			}
+							
+        	var table = document.getElementById('al_table');
+
+         	//first clear the table
+        	for (var i = table.rows.length -1; i>0; i--)
+        	{
+        		table.deleteRow(i);
+        	}
+   			//extract the platelist data 
+   			var mydata = data['platelist'];
+
+   			for (var i in mydata) {
+   				var row = mydata[i];
+				var thisclass = '';
+
+				//highlight the row if it is currently being observed
+				if ({{ver_plates}}.length > 0){
+					if ({{ver_plates}}.indexOf(row.plate) != -1){
+						thisclass='current';
+					}
+				}
+				//populate the table
+   				var tr = $('<tr>').addClass(thisclass).attr('onclick','loadPlate('+row.plate+')')
+   				tr.append(
+   					$('<td>').text(row.cart),
+   					$('<td>').text(row.plate),
+   					$('<td>').text(row.name),
+   					$('<td>').text(row.plate_type),
+   					$('<td>').text(row.priority),
+   					$('<td>').text(row.dab),
+   					$('<td>').text(row.vdone+'/'+row.vplan),
+   					$('<td>').text(row.current_sn2),
+   					$('<td>').text(row.exp_sn2),
+   					$('<td>').text(row.sn_completion),
+   					$('<td>').text(row.pc_completion)
+   					).appendTo(table);
+   			}
+        },
+        error: function(x,y,z) {
+            // x.responseText should have what's wrong
+            // blind submit
+        }
+    });
+}
+
+//If a row in the active list is clicked, load the exposures for that plate
+function loadPlate(plate){
+	changeCursor('al_table')
+	location.href='/?plateid='+plate;
+}
+
+//set the cursor to 'wait'
+function changeCursor(submit_el){
+	document.body.style.cursor = 'wait';
+	document.getElementById(submit_el).style.cursor = 'wait';
+}
+
+//populate all the exposure tables if reload=0, or just the active table if reload=1
+function populateExposureTables(reload){
+	//first, check to see if an active table (one for current observations) exists
+	var active_table = document.getElementById('table_'+{{current_mjd}});
+	if (reload == 0 || active_table != null){
+		//check that a plate exists
+		if ({{plate_id|jsonfilter}} != null){
+
+			$.ajax({
+			        url: '/plate_exposures?plateid='+{{plate_id}},
+			        dataType: 'json',
+			    	success: function(data) {
+						//extract the mjd_info and the exposure_info from the json data
+			    		var mjd_info = data['mjd_info'];
+			    		var exposure_info = data['exposures']
+			    		//get a sorted list of MJDs (latest on top)
+			    		var mjds = Object.keys(exposure_info).sort(function(a, b){return b-a});
+
+			    		//move bad visits to the end
+						var badmjds = [];
+						for (var i in mjds){
+							if (mjd_info[mjds[i]]['vstatus'] == 0 && mjds[i] != {{current_mjd}}){
+								badmjds.push(mjds[i]);
+								delete mjds[i];
+							}
+						}
+						mjds = mjds.concat(badmjds);
+						//use the bad_visits variable to ensure that the Bad Visits label is only displayed once 
+						var bad_visits = 0;
+
+			    		for (var i in mjds) {
+			    			//get data for each mjd
+			    			var mjd = mjds[i];
+			    			var mjd_row = mjd_info[mjd];
+			    			var mydata = exposure_info[mjd];
+
+			    			//if this is an initial load, then need to create the tables first
+							if (reload == 0) {createExposureTable(mjd,mjd_row,bad_visits);}
+							//if reloading the active table, need to clear out the old data first
+							else if (mjd == {{current_mjd}}) {								
+				    			for (var j = active_table.rows.length -1; j>1; j--){
+					        		active_table.deleteRow(j);
+				    	    	}
+				    	    }
+				    	    //do nothing if reloading historical observations
+				    	    else {continue;}
+
+							if (mjd_row['vstatus'] == 0 && mjd != {{current_mjd}}) {bad_visits = 1}
+		
+			    			for (var k in mydata) {
+			   					var row = mydata[k];
+			   					//highlight rows with bad or discarded quality labels
+			   					var thisclass = '';
+			   					if (row.quality == 'Bad'){
+			   						thisclass = 'danger';
+			   					}
+			   					else if (row.quality == 'Processing'){
+			   						thisclass = 'warning';
+			   					}
+			   					else if (row.quality == 'Discarded'){
+			   						thisclass = 'warning';
+			   					}
+			   					else if (row.quality == 'Unpaired (Good)'){
+			   						thisclass = 'warning';
+			   					}
+			   					else if (row.quality == 'Unpaired (Bad)'){
+			   						thisclass = 'danger';
+			   					}
+			   					
+
+			   					//populate the table
+			   					var tr = $('<tr>').addClass(thisclass).
+			   								attr('onclick','window.open("/exposureDetail.html?exposure_num='+row.exposure_num+'")')	
+			   					tr.append(
+			   						$('<td hidden>').text(row.time),
+				   					$('<td>').text(row.exposure_num),
+				   					$('<td>').text(row.dither),
+				   					$('<td>').text(row.exposure_type),
+				   					$('<td>').text(row.quality),
+				   					$('<td>').attr('style','white-space:nowrap').text(row.exposure_starttime_str),
+				   					$('<td>').text(row.exposure_time.toFixed(1)),
+				   					$('<td>').text(row.qr_snr2),
+				   					$('<td>').text(row.apr_snr2)
+				   				).appendTo('#table_'+mjd);
+			   				}
+
+			   				//add S/N summary for each MJD
+			   				
+			   				var mjd_summary = document.getElementById('mjd_summary_'+mjd); 
+			   				//change color of visit sn2 and accumulated sn2 when they reach the goal levels 
+			   				if (mjd_row['visit_sn2'] >= mjd_row['exp_visit_sn2'] || mjd_row['exp_visit_sn2'] == 'N/A'){
+			   					visitclass='success';
+			   				} 
+			   				else {
+			   					visitclass='danger';
+			   				}
+			   				if (mjd_row['total_sn2'] >= mjd_row['exp_total_sn2'] || mjd_row['exp_total_sn2'] == 'N/A'){
+			   					totalclass='success';
+			   				} 
+			   				else {
+			   					totalclass='danger';
+			   				}
+
+				   			mjd_summary.innerHTML = '<strong> Visit SN<sup>2</sup>: </strong><span class='+visitclass+'>'+ mjd_row['visit_sn2']+'</span> &nbsp;&nbsp;&nbsp; \
+			   					<strong> Expected Visit SN<sup>2</sup>: </strong>' + mjd_row['exp_visit_sn2'] +'</font> &nbsp;&nbsp;&nbsp; \
+								<strong> Accumulated SN<sup>2</sup>: </strong><span class='+totalclass+'>'+ mjd_row['total_sn2'] +'</span> &nbsp;&nbsp;&nbsp; \
+								<strong> Expected Accumulated SN<sup>2</sup>: </strong>'+ mjd_row['exp_total_sn2'] +'&nbsp;&nbsp;&nbsp;'; 
+			    		}
+			    	},
+			        error: function(x,y,z) {
+			            // x.responseText should have what's wrong
+			            // blind submit
+			        }
+			    });
+		}
+	}
+}
+
+//create an exposure table
+function createExposureTable(mjd,mjd_info,bad_visits){
+	//tables will go in exp_tables_div
+	var tables_div = document.getElementById('exp_tables_div');
+	var historical_label = $('<h2>').attr('style','color:green').attr('align','left');
+	//if this is a table for an active observation, add a label saying so.
+	//tables for previous observations will then be labelled as historical.
+	if (mjd == {{current_mjd}}) {
+		var current_label = $('<h2>').attr('style','color:green').attr('align','left');
+		current_label.text('Current Observing');	
+		$(tables_div).append(current_label);
+		historical_label.text('Historical Observations')
+	}
+
+	//if there are visits with S/N=0, label them as Bad Visits (only do once)
+	//(don't include current observing)
+	if (mjd_info['vstatus'] == 0 && bad_visits == 0 && mjd != {{current_mjd}}) {
+		var bad_visit_label = $('<h2>').attr('style','color:red').attr('align','left');
+		bad_visit_label.text('Bad Visits'); 
+		$(tables_div).append(bad_visit_label);
+	}	
+
+	//create a new table, using the mjd in the id
+	var table = $('<table>').addClass('expTable').attr('id','table_'+mjd);
+
+	table.append('<thead> \
+					<tr> \
+						<th colspan="2">MJD: '+mjd+'</th> \
+						<th colspan="2">Plate: '+mjd_info['plate_id']+'</th> \
+						<th colspan="2">Cart: '+mjd_info['cart']+'</th> \
+						<th colspan="2">Visit: '+mjd_info['vdone_str']+'/'+mjd_info['vplan']+'</th> \
+					</tr> \
+				  </thead>');	
+
+	table.append('<tr> \
+					<th hidden>Refresh time</th> \
+					<th>Exposure Number</th> \
+					<th>Dither</th> \
+					<th>Exposure Type</th> \
+					<th>Quality</th> \
+					<th>Start Time (UT)</th> \
+					<th>Exposure Time (s)</th> \
+					<th>QR SN<sup>2</sup></th> \
+					<th>APR SN<sup>2</sup></th> \
+				</tr>');
+
+	$(tables_div).append(table);
+
+
+	//add S/N summary for each MJD
+	var summary = $('<h3>').attr('align','center').attr('id','mjd_summary_'+mjd).attr('style','color:black');
+	$(tables_div).append(summary);
+
+	var gap = $('<br><br>');
+	$(tables_div).append(gap);
+
+	$(tables_div).append(historical_label);
+
+}
+
+
+//display the time of the last update 
+function updateTime()
+{
+    var update_notice = document.getElementById('last_update');
+    var now = new Date().toUTCString().replace('GMT','UTC');
+    update_notice.innerHTML = 'Last updated: '+now;
+}
+
+//blink the quicklook logo
+function blinkLogo(){
+    document.getElementById("logo").src = "static/images/apql_logo_blink.png";
+    setTimeout(function(){document.getElementById("logo").src = "static/images/apql_logo.png";},100);   
+}
+
+//refresh Active Pluggings and Current Observing tables every 10s
+(function poll(){
+	setTimeout(function(){
+		blinkLogo();
+		populateActivePluggings();
+		populateExposureTables(1);
+		updateTime();
+		poll();
+	},10000);
+})();
+
+</script>
+{% endblock head %}
+
+{% block body %}
+<div id='main'>
+<!--last update text goes here -->
+<p align="right" style="color:black" id="last_update"> </p>
+
+<!--display any error messages-->
+<div id='errors'>
+<p align="left" style="color:red"> {{error_messages}}</p>
+</div>
+
+<!--Today's MJD -->
+<div class="row">
+	 <h1 align="center" ><a href="/" style="color:black"> MJD Today: {{current_mjd}} </a></h1>
+<div>
+
+<!--The Get Plate button -->
+<div>
+	<form name ="plate_search" class="form3" action="" method="get">		
+		<p class="submit">
+			<button type="submit">Get Plate</button>
+			<input type="text" name="plateid" id="plateid" placeholder='e.g. 7531'/>		
+		</p>															
+	</form>	
+</div>
+<!--Active Pluggings table-->
+<div>
+<h2> Active Pluggings </h2>
+<table class="expTable"  id="al_table">
+		<tr>
+		<th>Cart</th>
+		<th>Plate</th>
+		<th>Name</th>
+		<th>Plate Type</th>
+		<th>Priority</th>
+		<th>DAB</th>
+		<th>Visits - vdone/vplan</th>
+		<th>Current SN<sup>2</sup></th>
+		<th>Expected SN<sup>2</sup></th>
+		<th>SN % </th>
+		<th>SN+Visit % </th>
+		</tr>
+</table>	
+<br>
+</div>
+
+<!--display some plate information-->
+<div>
+	{% if plate_id != None %}
+		<h1 style="color:black" align=center>
+			<strong>Plate:</strong> {{plate_id}} &nbsp;&nbsp;
+			<strong>Field:</strong> {{field_id}}&nbsp;&nbsp;
+			<strong>Loc-Ver:</strong> {{loc_id}}-{{version}}
+			<strong>Plate Type:</strong> {{plate_type}}
+			<br>
+		</h1>
+		<h2 style="color:black" align=center>
+			Plates with same Field, Location ID and Version:&nbsp;&nbsp;
+			{% for p in ver_plates %}
+					{{p}}&nbsp;&nbsp;
+			{% endfor %}
+		</h2>
+	{% endif %}
+</div>
+
+<!--exposure tables-->
+<div id="exp_tables_div"></div>
+</div>
+{% endblock body %}
